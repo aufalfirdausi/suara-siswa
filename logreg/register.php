@@ -5,27 +5,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   $name = mysqli_real_escape_string($conn, $_POST['name']);
   $email = mysqli_real_escape_string($conn, $_POST['email']);
   $password = mysqli_real_escape_string($conn, $_POST['password']);
-  $role = mysqli_real_escape_string($conn, $_POST['role']); // ambil dari radio button
+  $role = 'student'; //default role
 
   // Hash password biar aman
   $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-  if ($role == 'admin') {
-    // Cek apakah email sudah ada di tabel admins
-    $check = mysqli_query($conn, "SELECT * FROM admins WHERE email='$email'");
-    if (mysqli_num_rows($check) > 0) {
-      echo "Email sudah terdaftar sebagai admin!";
-    } else {
-      // Simpan ke tabel admins
-      $query = "INSERT INTO admins (name, email, password, role)
-                VALUES ('$name', '$email', '$hashed_password', 'admin')";
-      if (mysqli_query($conn, $query)) {
-        echo "Registrasi admin berhasil! <a href='login.php'>Login</a>";
-      } else {
-        echo "Error: " . mysqli_error($conn);
-      }
-    }
-  } elseif ($role == 'student') {
+   if ($role == 'student') {
     // Cek apakah email sudah ada di tabel students
     $check = mysqli_query($conn, "SELECT * FROM students WHERE email='$email'");
     if (mysqli_num_rows($check) > 0) {
@@ -35,7 +20,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $query = "INSERT INTO students (name, email, password)
                 VALUES ('$name', '$email', '$hashed_password')";
       if (mysqli_query($conn, $query)) {
-        echo "Registrasi student berhasil! <a href='login.php'>Login</a>";
+        echo "<script>
+        alert('Registrasi berhasil! Silakan login.');
+        window.location.href='login.php';
+      </script>";
       } else {
         echo "Error: " . mysqli_error($conn);
       }
@@ -46,29 +34,47 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register</title>
+    <title>Register - Suara Siswa</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
   </head>
   <body>
-    <form action="" method="post">
-      <h2>Registrasi</h2>
-      <label for="">Name</label>
-      <input type="text" name="name" required /><br />
-
-      <label for="">Email</label>
-      <input type="email" name="email" required /><br />
-
-      <label for="">Password</label>
-      <input type="password" name="password" required /><br />
-
-      <label class="label">Role:</label>
-      <input type="radio" name="role" value="admin" /> Admin
-      <input type="radio" name="role" value="student" /> Student <br />
-
-      <button type="submit">Kirim</button>
-    </form>
+    <div class="auth-container">
+      <div class="auth-card card-regis">
+        <div class="auth-panel form-panel">
+          <div class="form-header">
+            <h2>Buat Akun Baru</h2>
+            <p>Bergabunglah dengan Suara Siswa sekarang!</p>
+          </div>
+          <form action="register.php" method="POST">
+            <div class="input-group">
+              <label for="name">Nama Lengkap</label>
+              <input type="text" id="name" name="name" class="input-field" required />
+            </div>
+            <div class="input-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" class="input-field" required />
+            </div>
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="input-field"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+          </form>
+          <p class="auth-switch">
+            Sudah punya akun? <a href="login.php">Login di sini</a>
+          </p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

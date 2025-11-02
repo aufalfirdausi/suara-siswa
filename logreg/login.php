@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (mysqli_num_rows($query) > 0) {
       $student = mysqli_fetch_assoc($query);
       if (password_verify($password, $student['password'])) {
-        $_SESSION['user_id'] = $student['id_student'];
+        $_SESSION['id_student'] = $student['id_student'];
         $_SESSION['role'] = 'student';
         header("Location: ../students/dashboard.php");
         exit;
@@ -60,25 +60,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <form action="" method="post">
-      <h2>Login</h2>
-      <label for="">Email</label>
-      <input type="email" name="email" placeholder="email" required /><br />
-      <label for="">Passrord</label>
-      <input type="password" name="password" placeholder="password" required /><br />
-      <label class="label">Role: </label>
-        <input type="radio" name="role" value="admin" />admin
-        <input type="radio" name="role" value="student" />student<br />
-        <label for="">Otorization</label>
-      <input type="password" name="otorization" placeholder="opsional"/><br />
-      <button type="submit">Login</button>
-    </form>
-  </body>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Suara Siswa</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-panel form-panel">
+                <div class="form-header">
+                    <h2>Selamat Datang Kembali!</h2>
+                    <p>Login untuk melanjutkan ke dashboard Anda.</p>
+                </div>
+                <form action="" method="POST">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="input-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="input-field" required>
+                    </div>
+
+                    <div>
+                        <select id="role" name="role" class="input-field" required>
+                            <option value="" disabled selected>Pilih role</option>
+                            <option value="student">Siswa</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="otorization">Kode Otorisasi (Khusus Admin)</label>
+                        <input type="password" id="otorization" name="otorization" class="input-field" placeholder="Opsional">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="auth-switch">Belum punya akun? <a href="register.php">Daftar di sini</a></p>
+            </div>
+            <div class="auth-panel side-panel">
+                <h2>Suara Siswa</h2>
+                <p>Platform aspirasi untuk sekolah yang lebih baik. Sampaikan idemu, wujudkan perubahan.</p>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
