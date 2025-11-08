@@ -3,13 +3,13 @@ session_start();
 include('../config/connection.php');
 
 // Pastikan user sudah login dan rolenya student
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
+if (!isset($_SESSION['id_student']) || $_SESSION['role'] != 'student') {
   header("Location: ../logreg/login.php");
   exit;
 }
 
 // Ambil ID student dari session
-$id_student = $_SESSION['user_id'];
+$id_student = $_SESSION['id_student'];
 
 // Jika form disubmit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

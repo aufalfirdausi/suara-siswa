@@ -11,13 +11,13 @@ if (!isset($_SESSION['role'])) {
 // Tentukan role & ID berdasarkan session
 // Tentukan role & ID berdasarkan session
 if ($_SESSION['role'] === 'admin') {
-    $table = 'admin';
+    $table = 'admins';
     $id_field = 'id_admin';
-    $id_user = $_SESSION['id_admin'];
+    $id_user = $_SESSION['id_admin'] ?? $_SESSION['user_id'] ?? null;
 } else {
     $table = 'students';
     $id_field = 'id_student';
-    $id_user = $_SESSION['id_student'];
+    $id_user = $_SESSION['id_student'] ?? $_SESSION['user_id'] ?? null;
 }
 
 // Tentukan folder upload dan path DB berdasarkan role
@@ -88,8 +88,8 @@ if (isset($_POST['submit'])) {
         $update = "UPDATE $table SET name='$name' WHERE $id_field='$id_user'";
         mysqli_query($conn, $update);
 
-        echo "<p style='color:green;'>✅ Nama berhasil diperbarui.</p>";
-        $user['name'] = $name;
+        // echo "<p style='color:green;'>✅ Nama berhasil diperbarui.</p>";
+        // $user['name'] = $name;
     }
 }
 ?>
@@ -97,27 +97,52 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Edit Profil</title>
-<link rel="stylesheet" href="../assets/css/style.css">
+    <meta charset="UTF-8">
+    <title>Edit Profil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        /* Menghilangkan tampilan default input file */
+        
+    </style>
 </head>
 <body>
-    <h2>Edit Profil (<?= ucfirst($_SESSION['role']) ?>)</h2>
+<div class="dashboard-wrapper">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-bullhorn"></i>
+            <h2>Suara Siswa</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="<?= ($_SESSION['role'] === 'admin') ?'../admin/dashboard.php' : '../students/dashboard.php'; ?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li class="active"><a href="#"><i class="fas fa-user"></i> Profil Saya</a></li>
+            <li><a href="../logreg/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </aside>
 
-    <form action="" method="POST" enctype="multipart/form-data">
-        <label>Nama:</label><br>
-        <input type="text" name="name" value="<?= htmlspecialchars($user['name']) ?>" required><br><br>
+    <div class="main-content-pro">
+        <h2 style="margin-top:30px;">Edit Profil <?= ucfirst($_SESSION['role']) ?></h2>
+        <div class="content-inner">
+            <form action="" method="POST" enctype="multipart/form-data">        
+                <img src="../<?= htmlspecialchars($user['foto_profile'] ?? 'assets/profile-pic.jpg') ?>" 
+                     alt="Foto Profil" 
+                     width="120" 
+                     height="120" 
+                     style="border-radius:50%; border:1px solid #ccc;"><br><br>
 
-        <label>Foto Profil:</label><br>
-        <input type="file" name="foto_profile" accept="image/*"><br><br>
+                <label class="label-profile">Nama: 
+                    <input type="text" name="name" style="border:none; padding-left:10px; font-size:16px; width:30em;" value="<?= htmlspecialchars($user['name']) ?>" required>
+                </label><br><br>
 
-        <img src="../<?= htmlspecialchars($user['foto_profile'] ?? 'assets/profile-pic.jpg') ?>" 
-             alt="Foto Profil" 
-             width="120" 
-             height="120" 
-             style="border-radius:50%; border:1px solid #ccc;"><br><br>
+                <label class="custom-file-upload">
+                    Pilih Foto Profil
+                    <input type="file" name="foto_profile" accept="image/*">
+                </label><br>
+                <button class="custom-file-upload save" type="submit" name="submit">Save</button>
 
-        <button type="submit" name="submit">Simpan Perubahan</button>
-    </form>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>
